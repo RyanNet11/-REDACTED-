@@ -72,6 +72,7 @@ void initialize() {
 
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.add_autons({
+    Auton("Offensive Zone Auton", Offensive_Zone_Auton),
     Auton("Push Auton", Push_Auton),
     Auton("N/A", No_Movement),
     Auton("Match Auton Shoot", MatchAuton),
@@ -115,7 +116,7 @@ void competition_initialize() {
  * with the default priority and stack size whenever the robot is enabled via
  * the Field Management System or the VEX Competition Switch in the autonomous
  * mode. Alternatively, this function may be called in initialize or opcontrol
- * for non-competition testing purposes. test
+ * for non-competition testing purposes.
  *
  * If the robot is disabled or communications is lost, the autonomous task
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
@@ -148,8 +149,8 @@ void autonomous() {
 
   //Defines robot electronics ports:
 
-  pros::Motor Catapult(2);
-  pros::Motor Catapult_(15);
+  pros::Motor Catapult(4);
+  pros::Motor Catapult_(5);
 
 
   pros::ADIDigitalOut Wings (1, LOW);
@@ -162,8 +163,8 @@ void autonomous() {
 
    
 
-    pros::Motor Catapult(2);
-    pros::Motor Catapult_(15);
+    pros::Motor Catapult(4);
+    pros::Motor Catapult_(5);
 
 
     pros::ADIDigitalOut Wings (1, LOW);
@@ -205,8 +206,12 @@ void autonomous() {
 
 
     }
+  
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)){
 
+      Offensive_Zone_Auton();
 
+    }
 
     }
 
@@ -242,7 +247,7 @@ void opcontrol() {
 
   while (true) {
 
-  pros::Motor Catapult(2);
+  pros::Motor Catapult(4);
   
 
 
