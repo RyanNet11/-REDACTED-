@@ -72,10 +72,12 @@ void initialize() {
 
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.add_autons({
+
     Auton("Offensive Zone Auton", Offensive_Zone_Auton),
     Auton("Push Auton", Push_Auton),
     Auton("N/A", No_Movement),
     Auton("Match Auton Shoot", MatchAuton),
+
   });
 
   // Initialize chassis and auton selector
@@ -164,17 +166,19 @@ void autonomous() {
    
 
     pros::Motor Catapult(4);
-    pros::Motor Catapult_(5);
+    pros::Motor Catapult_(5); //Both Cata Motors 
 
 
-    pros::ADIDigitalOut Wings (1, LOW);
+    pros::ADIDigitalOut Wings (1, LOW); //pneumatics 
 
 
-    pros::Rotation CataPosition (12);
+    pros::Rotation CataPosition (12); //Rotation Sensor
 
     chassis.set_drive_brake(MOTOR_BRAKE_COAST);
 
     Wings.set_value(LOW);
+
+    CataPosition.set_position(359);
 
     while (true){
 
@@ -192,21 +196,45 @@ void autonomous() {
     }
 
           //Controls for the Catapult
-    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)){ //If L2 is being held
+    //if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)){ //If L2 is being held
 
 
-     Catapult.move_voltage(-9000); //Spin the catapult at 100% speed
-     Catapult_.move_voltage(9000); //Spin second motor at the opposite speed
+     //Catapult.move_voltage(-9000); //Spin the catapult at 100% speed
+     //Catapult_.move_voltage(9000); //Spin second motor at the opposite speed
 
-    }else{ //If L2 isn't being held
-
-
-      Catapult.move_voltage(0); //Stop the catapult
-      Catapult_.move_voltage(0); //Stop the catapult second motor
+    //}else{ //If L2 isn't being held
 
 
+      //Catapult.move_voltage(0); //Stop the catapult
+      //Catapult_.move_voltage(0); //Stop the catapult second motor
+      //first ratchet 342 (335 to set) beginning
+      //Second ratchet 325 (320 to set) correct
+      //third ratchet 307 (300 to set) last
+
+
+    //}
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)){
+      while (CataPosition.get_angle() > 320){
+      Catapult.move_voltage(-1000);
+      Catapult_.move_voltage(1000);
+      pros::delay(20);
+      }
+    }else{
+      Catapult.move_voltage(0);
+      Catapult_.move_voltage(0);
     }
-  
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){
+      if (CataPosition.get_angle() > 358){
+      Catapult.move_voltage(-1000);
+      Catapult_.move_voltage(1000);
+      }
+    }else{      
+      Catapult.move_voltage(0);
+      Catapult_.move_voltage(0);
+      }
+    }
+
+    
     if(master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)){
 
       Offensive_Zone_Auton();
@@ -216,26 +244,26 @@ void autonomous() {
     }
 
   
-//  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)){ //If Left D-PAD is pressed
+ //  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)){ //If Left D-PAD is pressed
 
-//    Offensive_Zone_Auton(); //Run the Offensive Zone Autonomous code 
+ //    Offensive_Zone_Auton(); //Run the Offensive Zone Autonomous code 
 
-//  }
+ //  }
 
-//  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)){ //If Right D-PAD is pressed
+ //  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)){ //If Right D-PAD is pressed
 
-//    Defensive_Zone_Auton(); //Run the Defensive Zone Autonomous code
+ //    Defensive_Zone_Auton(); //Run the Defensive Zone Autonomous code
 
-//  }
+ //  }
 
-//  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP)){ //If the Up Button is pressed
+ //  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP)){ //If the Up Button is pressed
 
-//    Skills_Auton(); //Run the Skills Autonomous code
-
-
+ //    Skills_Auton(); //Run the Skills Autonomous code
 
 
- }
+
+
+
 
 
 
