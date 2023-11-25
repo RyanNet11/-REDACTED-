@@ -213,23 +213,23 @@ void autonomous() {
 
 
     //}
-    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)){
-      while (CataPosition.get_angle() > 320){
-      Catapult.move_voltage(-1000);
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)){ //if L2 is presssed
+      while (CataPosition.get_angle() > 320){ // while the angle is > 320
+      Catapult.move_voltage(-1000); //move catta down
       Catapult_.move_voltage(1000);
-      pros::delay(20);
+      pros::delay(20); //delay added so the brain doesnt break
       }
     }else{
-      Catapult.move_voltage(0);
-      Catapult_.move_voltage(0);
+      Catapult.move_voltage(0); //once angle is > than 320 we stop motors
+      Catapult_.move_voltage(0); // This should set cata to right angle to load
     }
-    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){
-      if (CataPosition.get_angle() > 358){
-      Catapult.move_voltage(-1000);
-      Catapult_.move_voltage(1000);
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){ //once L1 is pressed
+      if (CataPosition.get_angle() < 358){ // if the angle is less than 358
+      Catapult.move_voltage(-1000); // 358 is the normal resting position
+      Catapult_.move_voltage(1000); //spin the motors
       }
-    }else{      
-      Catapult.move_voltage(0);
+    }else{      //if were at 359 (default starting position) 
+      Catapult.move_voltage(0);//stop the motors
       Catapult_.move_voltage(0);
       }
     }
