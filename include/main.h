@@ -65,8 +65,6 @@
  * button press in opcontrol() for testing purposes).
  */
 
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -87,4 +85,3 @@ void opcontrol(void);
 #endif
 
 #endif  // _PROS_MAIN_H_
-

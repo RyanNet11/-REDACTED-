@@ -4,12 +4,6 @@
 
 extern Drive chassis;
 
-
-
-void Push_Auton();
-void No_Movement();
-void MatchAuton(); 
-
 void drive_example();
 void turn_example();
 void drive_and_turn();
@@ -21,4 +15,3 @@ void interfered_example();
 void default_constants();
 void one_mogo_constants();
 void two_mogo_constants();
-

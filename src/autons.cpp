@@ -13,7 +13,6 @@ const int DRIVE_SPEED = 110; // This is 110/127 (around 87% of max speed).  We d
                              // faster and one side slower, giving better heading correction.
 const int TURN_SPEED  = 90;
 const int SWING_SPEED = 90;
-const int CATADR_SPEED = 30;
 
 
 
@@ -23,153 +22,6 @@ const int CATADR_SPEED = 30;
 
 // It's best practice to tune constants when the robot is empty and with heavier game objects, or with lifts up vs down.
 // If the objects are light or the cog doesn't change much, then there isn't a concern here.
-
-// . . .
-// Make your own autonomous functions here!
-// . . .
-
-void Defensive_Zone_Auton(){
-
-
-  default_constants();
-
-
-  //Defines robot motors
-  pros::Motor Catapult(2);
-  pros::Motor Catapult_(15);
-
-  pros::ADIDigitalOut Wings (1);
-
-
-  //Turn to position for backup
-  chassis.set_turn_pid(45, TURN_SPEED);
-  chassis.wait_drive();
-
-  //Backup into shooting position
-  chassis.set_drive_pid(-8.5, DRIVE_SPEED);
-  chassis.wait_drive();
-
-  //Turn to shooting position
-  chassis.set_turn_pid(-90, TURN_SPEED);
-  chassis.wait_drive();
-
-  //Backup into match load zone
-  chassis.set_drive_pid(-12, DRIVE_SPEED);
-  chassis.wait_drive();
-
-  //Shoot Alliance Triball
-  Catapult.move_voltage(-9000);
-  Catapult_.move_voltage(9000);
-
-  pros::delay(1000);
-  Catapult.move_voltage(0);
-
-  //Turn right toward climb pole
-  chassis.set_turn_pid(45, TURN_SPEED);
-  chassis.wait_drive();
-
-  //Activate Wings to go toward climb bar
-
-  //Drive and touch climb bar
-  chassis.set_drive_pid(20, DRIVE_SPEED);
-
-
-}
-
-
-void Offensive_Zone_Auton(){
-
-
-  default_constants();
-
-
-  //Defines robot motors
-  pros::Motor Catapult(2);
-  pros::ADIDigitalOut Wings (1);
-
-  //Turn right to drive
-  chassis.set_turn_pid(90, TURN_SPEED);
-  chassis.wait_drive();
-
-  //Drive to center of goal
-  chassis.set_drive_pid(50.5, DRIVE_SPEED);
-  chassis.wait_drive();
-
-  //Turn to face goal
-  chassis.set_turn_pid(90, TURN_SPEED);
-  chassis.wait_drive();
-
-  //Reverse for wind up
-  chassis.set_turn_pid(90, TURN_SPEED);
-  chassis.wait_drive();
-
-  //Activate Wings
-  Wings.set_value(true);
-
-  //Drive to score
-  chassis.set_drive_pid(10, DRIVE_SPEED);
-  chassis.wait_drive();
- 
-}
-
-
-void Push_Auton(){
-
-  //Defines robot motors
-  pros::Motor Catapult(2);
-  pros::Motor Catapult_(15);
-
-  pros::ADIDigitalOut Wings (1);
-
-
-  default_constants();
-
-chassis.set_drive_pid(30, DRIVE_SPEED);
-chassis.wait_drive();
-
-chassis.set_drive_pid(-32, DRIVE_SPEED);
-chassis.wait_drive();
-
- 
-}
-
-void No_Movement(){
-
-  pros::delay(60000);
-
-}
-
-void MatchAuton(){
-
-    //Defines robot motors
-  pros::Motor Catapult(2);
-  pros::Motor Catapult_(15);
-
-  pros::ADIDigitalOut Wings (1);
-
-
-  default_constants();
-
-
-chassis.set_drive_pid(-13, DRIVE_SPEED);
-chassis.wait_drive();
-
-chassis.set_turn_pid(-32, TURN_SPEED);
-chassis.wait_drive();
-
-
-chassis.set_drive_pid(-1000, -1);
-chassis.wait_drive();
-
-
-Catapult.move_voltage(-9000);
-Catapult_.move_voltage(9000);
-pros::delay(5000);
-Catapult.move_voltage(0);
-Catapult_.move_voltage(0);
-
-}
-
 
 void default_constants() {
   chassis.set_slew_min_power(80, 80);
@@ -387,3 +239,8 @@ void interfered_example() {
  chassis.wait_drive();
 }
 
+
+
+// . . .
+// Make your own autonomous functions here!
+// . . .

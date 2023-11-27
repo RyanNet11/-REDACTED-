@@ -36,5 +36,3 @@ void AutonSelector::add_autons(std::vector<Auton> autons) {
   current_auton_page = 0;
   Autons.assign(autons.begin(), autons.end());
 }
-
-

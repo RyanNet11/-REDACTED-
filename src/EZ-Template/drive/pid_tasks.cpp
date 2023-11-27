@@ -21,8 +21,8 @@ void Drive::ez_auto_task() {
 
     if (pros::competition::is_autonomous() && !util::AUTON_RAN)
       util::AUTON_RAN = true;
-//    else if (!pros::competition::is_autonomous())
-//      set_mode(DISABLE);
+    else if (!pros::competition::is_autonomous())
+      set_mode(DISABLE);
 
     pros::delay(util::DELAY_TIME);
   }
