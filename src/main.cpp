@@ -1,33 +1,32 @@
 #include "main.h"
 
 
-
 // Chassis constructor
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  {-10, -20}
+  {-15, -16}
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  ,{1, 11}
+  ,{6, 5}
 
   // IMU Port
-  ,5
+  ,20
 
   // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
   //    (or tracking wheel diameter)
-  ,2.75
+  ,2.5
 
   // Cartridge RPM
   //   (or tick per rotation if using tracking wheels)
-  ,200
+  ,1200
 
   // External Gear Ratio (MUST BE DECIMAL)
   //    (or gear ratio of tracking wheel)
   // eg. if your drive is 84:36 where the 36t is powered, your RATIO would be 2.333.
   // eg. if your drive is 36:60 where the 60t is powered, your RATIO would be 0.6.
-  ,0.6
+  ,2
 
 
   // Uncomment if using tracking wheels
@@ -72,12 +71,13 @@ void initialize() {
 
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.add_autons({
-
-    Auton("Offensive Zone Auton", Offensive_Zone_Auton),
-    Auton("Push Auton", Push_Auton),
-    Auton("N/A", No_Movement),
-    Auton("Match Auton Shoot", MatchAuton),
-
+    Auton("Example Drive\n\nDrive forward and come back.", drive_example),
+    Auton("Example Turn\n\nTurn 3 times.", turn_example),
+    Auton("Drive and Turn\n\nDrive forward, turn, come back. ", drive_and_turn),
+    Auton("Drive and Turn\n\nSlow down during drive.", wait_until_change_speed),
+    Auton("Swing Example\n\nSwing, drive, swing.", swing_example),
+    Auton("Combine all 3 movements", combining_movements),
+    Auton("Interference\n\nAfter driving forward, robot performs differently if interfered or not.", interfered_example),
   });
 
   // Initialize chassis and auton selector
@@ -148,133 +148,11 @@ void autonomous() {
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
-
-  //Defines robot electronics ports:
-
-  pros::Motor Catapult(4);
-  pros::Motor Catapult_(5);
-
-
-  pros::ADIDigitalOut Wings (1, LOW);
-
-
-  pros::Rotation CataPosition (12);
-
-
-  void driverControl(){
-
-   
-
-    pros::Motor Catapult(4);
-    pros::Motor Catapult_(5); //Both Cata Motors 
-
-
-    pros::ADIDigitalOut Wings (1, LOW); //pneumatics 
-
-
-    pros::Rotation CataPosition (12); //Rotation Sensor
-
-    chassis.set_drive_brake(MOTOR_BRAKE_COAST);
-
-    Wings.set_value(LOW);
-
-    CataPosition.set_position(359);
-
-    while (true){
-
-       chassis.tank();
-
-     if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){ //If R2 is being held
-
-
-     Wings.set_value(HIGH); //Spread the wings
-       
-     }else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)){ //If R2 is not being held
-
-       
-        Wings.set_value (LOW); //Tuck the wings in 
-    }
-
-          //Controls for the Catapult
-    //if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)){ //If L2 is being held
-
-
-     //Catapult.move_voltage(-9000); //Spin the catapult at 100% speed
-     //Catapult_.move_voltage(9000); //Spin second motor at the opposite speed
-
-    //}else{ //If L2 isn't being held
-
-
-      //Catapult.move_voltage(0); //Stop the catapult
-      //Catapult_.move_voltage(0); //Stop the catapult second motor
-      //first ratchet 342 (335 to set) beginning
-      //Second ratchet 325 (320 to set) correct
-      //third ratchet 307 (300 to set) last
-
-
-    //}
-
-
-    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){
-      Catapult.move_voltage(-9000); //Spin the catapult at 100% speed
-      Catapult_.move_voltage(9000); //Spin second motor at the opposite speed
-    }else{
-      Catapult.move_voltage(0); 
-      Catapult_.move_voltage(0); 
-    }
-    
-
-    
-    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)){
-
-     // Offensive_Zone_Auton();
-
-    }
-
-    }
-
-  
- //  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)){ //If Left D-PAD is pressed
-
- //    Offensive_Zone_Auton(); //Run the Offensive Zone Autonomous code 
-
- //  }
-
- //  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)){ //If Right D-PAD is pressed
-
- //    Defensive_Zone_Auton(); //Run the Defensive Zone Autonomous code
-
- //  }
-
- //  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP)){ //If the Up Button is pressed
-
- //    Skills_Auton(); //Run the Skills Autonomous code
-
-
-
-
-
-
-
-
-  
-
-
-void opcontrol(); {
+void opcontrol() {
   // This is preference to what you like to drive on.
+  chassis.set_drive_brake(MOTOR_BRAKE_COAST);
 
   while (true) {
-
-  pros::Motor Catapult(4);
-  
-
-
-
-  pros::ADIDigitalOut Wings (1, LOW);
-
-
-  pros::Rotation CataPosition (12);
-
 
     chassis.tank(); // Tank control
     // chassis.arcade_standard(ez::SPLIT); // Standard split arcade
@@ -286,25 +164,6 @@ void opcontrol(); {
     // Put more user control code here!
     // . . .
 
-  
-
-
-  //Controls for the controller
-
-      //Controls for Wing Mech
-
-    driverControl(){
-
-
-
-
-
-
-
-
-    
-
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }
 }
-
