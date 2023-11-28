@@ -172,19 +172,56 @@ void autonomous() {
        
         Wings.set_value (LOW); //Tuck the wings in 
     }
-    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && CataPos.get_angle() > 32500){
-      Cata.move_voltage(9000); 
-      pros::delay(1);
-    }else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){
-      Cata.move_voltage(9000);
-    }else{
-      Cata.move_voltage(0);
+
+
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && CataPos.get_angle() > 33000){  
+      //^^if L2 is being pressed and the ratchet angle is greater than 33000
+      //this makes sure the ratchet is above the cata launch position
+
+      Cata.move_voltage(9000); //spin the motors untill it slots into the ratchet
+      pros::delay(1); // Delay is here to prevent code breaking.. yay C++
+
+    }else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){ // If L1 is being pressed
+
+      Cata.move_voltage(9000); // Spin the motors
+
+    }else{ // If nothing is being pressed
+
+      Cata.move_voltage(0); //stop the motors
+    
     }
 
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
-      master.print(1, 1, "Position: %d", CataPos.get_angle());
+
+
+    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) { 
+      //when the Y button is pressed
+
+      master.print(1, 1, "Position: %d", CataPos.get_angle()); 
+      //use the screen on the controler to print the position of 
+      //curent catapult position, shown as a 36000-00001
 
     }
+
+
+    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X)) { 
+      //While the X button is being pressed
+
+      if (CataPos.get_angle() > 30740){ //30735
+      //if the curent cata position is greater than (CHANGE THIS) 
+      //this makes sure the catapult is not yet in position
+      
+        Cata.move_voltage(9000); //spin the motors 
+        pros::delay(1); //delay so it doesnt break :)
+
+        //Motors will spin untill the cata
+        //fits into the correct ratchet spot
+      }else{
+        //if nothing is being pressed
+        Cata.move_voltage(0); //stop the motors
+      }
+      
+    }
+
   }
   }
 void opcontrol() {
