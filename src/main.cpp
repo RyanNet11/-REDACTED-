@@ -5,28 +5,28 @@
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  {-15, -16}
+  {-10, -20}
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  ,{6, 5}
+  ,{1, 11}
 
   // IMU Port
-  ,20
+  ,3
 
   // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
   //    (or tracking wheel diameter)
-  ,2.5
+  ,2.75
 
   // Cartridge RPM
   //   (or tick per rotation if using tracking wheels)
-  ,1200
+  ,200
 
   // External Gear Ratio (MUST BE DECIMAL)
   //    (or gear ratio of tracking wheel)
   // eg. if your drive is 84:36 where the 36t is powered, your RATIO would be 2.333.
   // eg. if your drive is 36:60 where the 60t is powered, your RATIO would be 0.6.
-  ,2
+  ,0.6
 
 
   // Uncomment if using tracking wheels
@@ -148,6 +148,45 @@ void autonomous() {
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
+ pros::Motor Catapult(-4);
+ pros::Motor Catapult_(5);
+ pros::Motor_Group Cata({Catapult, Catapult_});
+ pros::ADIDigitalOut Wings (1, LOW);
+ pros::Rotation CataPos(12);
+ pros::Controller master(pros::E_CONTROLLER_MASTER);
+
+  void diverControl(){
+    chassis.set_drive_brake(MOTOR_BRAKE_COAST);
+    Wings.set_value(LOW);
+    while (true){
+
+       chassis.tank();
+
+     if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){ //If R2 is being held
+
+
+     Wings.set_value(HIGH); //Spread the wings
+       
+     }else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)){ //If R2 is not being held
+
+       
+        Wings.set_value (LOW); //Tuck the wings in 
+    }
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && CataPos.get_angle() > 32500){
+      Cata.move_voltage(9000); 
+      pros::delay(1);
+    }else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){
+      Cata.move_voltage(9000);
+    }else{
+      Cata.move_voltage(0);
+    }
+
+    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
+      master.print(1, 1, "Position: %d", CataPos.get_angle());
+
+    }
+  }
+  }
 void opcontrol() {
   // This is preference to what you like to drive on.
   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
@@ -163,7 +202,7 @@ void opcontrol() {
     // . . .
     // Put more user control code here!
     // . . .
-
+    diverControl();
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }
 }
