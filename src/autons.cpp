@@ -244,3 +244,41 @@ void interfered_example() {
 // . . .
 // Make your own autonomous functions here!
 // . . .
+
+void skillsAuton() {
+
+ pros::Motor Catapult(-4);
+ pros::Motor Catapult_(5);
+ pros::Motor_Group Cata({Catapult, Catapult_});
+ pros::ADIDigitalOut Wings (1, LOW);
+ pros::Rotation CataPos(12);
+ pros::Controller master(pros::E_CONTROLLER_MASTER);
+
+
+  chassis.set_turn_pid(40, TURN_SPEED);
+  chassis.wait_drive();
+  
+  chassis.set_drive_pid(-12, DRIVE_SPEED,true);
+  chassis.wait_drive();
+
+  Cata.move_voltage(9000);
+  pros::delay(45000);
+
+  chassis.set_drive_pid(48, DRIVE_SPEED, true);
+  chassis.wait_drive();
+
+  chassis.set_turn_pid(-40, TURN_SPEED);
+  chassis.wait_drive();
+
+  if(CataPos.get_angle() > 33000){  
+      //^^if L2 is being pressed and the ratchet angle is greater than 33000
+      //this makes sure the ratchet is above the cata launch position
+
+      Cata.move_voltage(9000); //spin the motors untill it slots into the ratchet
+      pros::delay(1); // Delay is here to prevent code breaking.. yay C++
+  }
+
+  chassis.set_drive_pid(72, DRIVE_SPEED);
+  chassis.wait_drive();
+
+}
