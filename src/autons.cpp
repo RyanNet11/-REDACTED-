@@ -253,21 +253,22 @@ void skillsAuton() {
  pros::ADIDigitalOut Wings (1, LOW);
  pros::Rotation CataPos(12);
  pros::Controller master(pros::E_CONTROLLER_MASTER);
+ pros::IMU IMU(3);
 
 
-  chassis.set_turn_pid(40, TURN_SPEED);
+ // chassis.set_turn_pid(30, TURN_SPEED);
   chassis.wait_drive();
   
-  chassis.set_drive_pid(-12, DRIVE_SPEED,true);
+  chassis.set_drive_pid(-6, DRIVE_SPEED,true);
   chassis.wait_drive();
 
   Cata.move_voltage(9000);
   pros::delay(45000);
 
-  chassis.set_drive_pid(48, DRIVE_SPEED, true);
+  chassis.set_drive_pid(36, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  chassis.set_turn_pid(-40, TURN_SPEED);
+  chassis.set_turn_pid(-30, TURN_SPEED);
   chassis.wait_drive();
 
   if(CataPos.get_angle() > 33000){  
@@ -278,7 +279,36 @@ void skillsAuton() {
       pros::delay(1); // Delay is here to prevent code breaking.. yay C++
   }
 
-  chassis.set_drive_pid(72, DRIVE_SPEED);
+  chassis.set_drive_pid(true, DRIVE_SPEED);
   chassis.wait_drive();
+
+  if (IMU.get_roll() >10){
+  chassis.set_drive_pid(24, DRIVE_SPEED);
+  chassis.wait_drive();
+  }
+  chassis.set_drive_pid(62, DRIVE_SPEED);
+  chassis.wait_drive();
+
+  chassis.set_drive_pid(-24, DRIVE_SPEED);
+  chassis.wait_drive();
+
+  chassis.set_drive_pid(24, DRIVE_SPEED);
+  chassis.wait_drive();
+}
+
+void defensiveAuton(){
+
+//Back up
+chassis.set_drive_pid(12, DRIVE_SPEED);
+chassis.wait_drive();
+
+//Swing Left
+chassis.set_swing_pid(LEFT_SWING, 45 , SWING_SPEED);
+chassis.wait_drive();
+
+chassis.set_drive_pid(-6, DRIVE_SPEED);
+chassis.wait_drive();
+
+ 
 
 }

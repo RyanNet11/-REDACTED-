@@ -169,55 +169,48 @@ void autonomous() {
         Wings.set_value (LOW); //Tuck the wings in 
     }
 
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_X) && CataPos.get_angle() > 34400){  //34500
+        //^^if X is being pressed and the ratchet angle is greater than 33000
+        //this makes sure the ratchet is above the cata launch position
 
-    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && CataPos.get_angle() > 33000){  
-      //^^if L2 is being pressed and the ratchet angle is greater than 33000
-      //this makes sure the ratchet is above the cata launch position
 
-      Cata.move_voltage(9000); //spin the motors untill it slots into the ratchet
-      pros::delay(1); // Delay is here to prevent code breaking.. yay C++
+        Cata.move_voltage(9000); //spin the motors untill it slots into the ratchet
+        pros::delay(1); // Delay is here to prevent code breaking.. yay C++
+       //This part of the code is used for testing and if we need to set the catapult to the
+       //middle ratchet for any reason.
 
-    }else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){ // If L1 is being pressed
+      }else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){ // If L1 is being pressed
 
-      Cata.move_voltage(9000); // Spin the motors
 
-    }else{ // If nothing is being pressed
+          Cata.move_voltage(9000); // Spin the motors
+          //This is just the normal spin function of the robot's catapult
 
-      Cata.move_voltage(0); //stop the motors
+
+      }else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && CataPos.get_angle() > 30350) {
+
+        //If the curent angle is greater than 30330, we spin the catapult down untill it hits 30330
+
+        Cata.move_voltage(8000); // Spins the motors
+        pros::delay(0.2); //delay ensures the catapult doesnt break 
+
+        //The goal of our L2 button program is to be able to pull back the catapult to the normal
+        //launching position where the match loads can be loaded into the robot. 
+
+      }else{ // If nothing is being pressed
+
+        Cata.move_voltage(0); //stop the motors
     
-    }
-
-
-
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) { 
+      }
+    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
       //when the Y button is pressed
 
-      master.print(1, 1, "Position: %d", CataPos.get_angle()); 
-      //use the screen on the controler to print the position of 
+
+      master.print(1, 1, "Position: %d", CataPos.get_angle());
+      //use the screen on the controler to print the position of
       //curent catapult position, shown as a 36000-00001
 
     }
-
-
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X)) { 
-      //While the X button is being pressed
-
-      if (CataPos.get_angle() > 30740){ //30735
-      //if the curent cata position is greater than (CHANGE THIS) 
-      //this makes sure the catapult is not yet in position
-      
-        Cata.move_voltage(9000); //spin the motors 
-        pros::delay(1); //delay so it doesnt break :)
-
-        //Motors will spin untill the cata
-        //fits into the correct ratchet spot
-      }else{
-        //if nothing is being pressed
-        Cata.move_voltage(0); //stop the motors
-      }
-      
-    }
-    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP)){
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP) ){
 
 
         skillsAuton();
