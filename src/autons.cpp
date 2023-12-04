@@ -272,20 +272,21 @@ void skillsAuton() {
           //If the curent angle is greater than 30330, we spin the catapult down untill it hits 30330
 
           Cata.move_voltage(8000); // Spins the motors
-          pros::delay(0.2); //delay ensures the catapult doesnt break 
+          pros::delay(0.5); //delay ensures the catapult doesnt break 
 
           //The goal of our L2 button program is to be able to pull back the catapult to the normal
           //launching position where the match loads can be loaded into the robot. 
       }
-      else{
+      else if(CataPos.get_angle() < 30360){
         Cata.move_voltage(9000);
      }
-
-      i = i + 1;
+    i = i+1;
 
     }
 
-  //pros::delay(30000);
+  pros::delay(4000);
+  i = 46;
+  Cata.move_voltage(0);
   chassis.set_drive_pid(2, DRIVE_SPEED);
   chassis.wait_drive();
   pros::delay(500);
@@ -294,7 +295,7 @@ void skillsAuton() {
   chassis.wait_drive();
 
   //move to the middle of the defensive zone
-  chassis.set_drive_pid(50, DRIVE_SPEED);
+  chassis.set_drive_pid(60, DRIVE_SPEED);
   chassis.wait_drive();
 
   //turn towards the middle bar
@@ -303,13 +304,20 @@ void skillsAuton() {
   pros::delay(200);
 
   //Sets the catapult in the lowered position
-  if(CataPos.get_angle() > 33000){  
-      //^^if L2 is being pressed and the ratchet angle is greater than 33000
-      //this makes sure the ratchet is above the cata launch position
+   if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && CataPos.get_angle() > 30350) {
+      //If the curent angle is greater than 30330, we spin the catapult down untill it hits 30330
 
-      Cata.move_voltage(9000); //spin the motors untill it slots into the ratchet
-      pros::delay(1); // Delay is here to prevent code breaking.. yay C++
-  }
+      Cata.move_voltage(8000); // Spins the motors
+      pros::delay(0.2); //delay ensures the catapult doesnt break 
+
+      //The goal of our L2 button program is to be able to pull back the catapult to the normal
+      //launching position where the match loads can be loaded into the robot. 
+
+    }else{ // If nothing is being pressed
+
+      Cata.move_voltage(0); //stop the motors
+  
+    }
 
   //Drive until it begins to climb the middle bar
 
