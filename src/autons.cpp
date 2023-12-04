@@ -257,7 +257,6 @@ void skillsAuton() {
  pros::IMU IMU(3);
  int AutonTimer();
  int i = 0;
- int AutonTimer = pros::delay();
   //Backs the robot into the load zone
   chassis.set_drive_pid(-6, DRIVE_SPEED,true);
   chassis.wait_drive();
