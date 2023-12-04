@@ -7,7 +7,7 @@
 /////
 
 
-const int DRIVE_SPEED = 110; // This is 110/127 (around 87% of max speed).  We don't suggest making this 127.
+const int DRIVE_SPEED = 89; // This is 110/127 (around 87% of max speed).  We don't suggest making this 127.
                              // If this is 127 and the robot tries to heading correct, it's only correcting by
                              // making one side slower.  When this is 87%, it's correcting by making one side
                              // faster and one side slower, giving better heading correction.
@@ -255,7 +255,9 @@ void skillsAuton() {
  pros::Rotation CataPos(12);
  pros::Controller master(pros::E_CONTROLLER_MASTER);
  pros::IMU IMU(3);
-
+ int AutonTimer();
+ int i = 0;
+ int AutonTimer = pros::delay();
   //Backs the robot into the load zone
   chassis.set_drive_pid(-6, DRIVE_SPEED,true);
   chassis.wait_drive();
@@ -265,16 +267,41 @@ void skillsAuton() {
   chassis.wait_drive();
 
   //Fire the catapult for 45 seconds
-  Cata.move_voltage(9000);
-  pros::delay(45000);
+    while (i < 45){
+      if(CataPos.get_angle() > 30350) {
+
+          //If the curent angle is greater than 30330, we spin the catapult down untill it hits 30330
+
+          Cata.move_voltage(8000); // Spins the motors
+          pros::delay(0.2); //delay ensures the catapult doesnt break 
+
+          //The goal of our L2 button program is to be able to pull back the catapult to the normal
+          //launching position where the match loads can be loaded into the robot. 
+      }
+      else{
+        Cata.move_voltage(9000);
+     }
+
+      i = i + 1;
+
+    }
+
+  //pros::delay(30000);
+  chassis.set_drive_pid(2, DRIVE_SPEED);
+  chassis.wait_drive();
+  pros::delay(500);
+
+  chassis.set_turn_pid(60, TURN_SPEED);
+  chassis.wait_drive();
 
   //move to the middle of the defensive zone
-  chassis.set_drive_pid(36, DRIVE_SPEED, true);
+  chassis.set_drive_pid(50, DRIVE_SPEED);
   chassis.wait_drive();
 
   //turn towards the middle bar
-  chassis.set_turn_pid(-30, TURN_SPEED);
+  chassis.set_turn_pid(-5, TURN_SPEED);
   chassis.wait_drive();
+  pros::delay(200);
 
   //Sets the catapult in the lowered position
   if(CataPos.get_angle() > 33000){  
@@ -286,21 +313,18 @@ void skillsAuton() {
   }
 
   //Drive until it begins to climb the middle bar
-  chassis.set_drive_pid(true, DRIVE_SPEED);
+
+
+  chassis.set_drive_pid(80, 110);
   chassis.wait_drive();
   
-  //detects if the robot has gone over the middle bar
-  if (IMU.get_roll() >10){
-  chassis.set_drive_pid(24, DRIVE_SPEED);
-  chassis.wait_drive();
-  }
   //Opens the wings
-  if (IMU.get_roll() <2){
-    Wings.set_value(true);
-  }
+  
+  Wings.set_value(true);
+  
 
   //Move forward to push the shot triballs into the goal
-  chassis.set_drive_pid(68, DRIVE_SPEED);
+  chassis.set_drive_pid(40, DRIVE_SPEED);
   chassis.wait_drive();
 
   //Back up away from the goal
@@ -310,6 +334,13 @@ void skillsAuton() {
   //Drive back into the goal to push in any triballs that had been broken
   chassis.set_drive_pid(28, DRIVE_SPEED);
   chassis.wait_drive();
+
+  chassis.set_drive_pid(-20, DRIVE_SPEED);
+  chassis.wait_drive();
+  
+
+  
+
 }
 
 //Defensive zone 2v2 auton program
@@ -323,27 +354,21 @@ void defensiveAuton(){
  pros::Controller master(pros::E_CONTROLLER_MASTER);
  pros::IMU IMU(3);
 
-if(CataPos.get_angle() > 34400){  //34500
-        //^^if X is being pressed and the ratchet angle is greater than 33000
-        //this makes sure the ratchet is above the cata launch position
 
+//turn the robot towards the goal 
+chassis.set_turn_pid(30, TURN_SPEED);
+chassis.wait_drive();
 
-        Cata.move_voltage(9000); //spin the motors untill it slots into the ratchet
-        pros::delay(1); // Delay is here to prevent code breaking.. yay C++
-       //This part of the code is used for testing and if we need to set the catapult to the
-       //middle ratchet for any reason.
-}
-
-//Push the Triball into the low goal
+//Push the Triball into the goal
 chassis.set_drive_pid(24, DRIVE_SPEED);
 chassis.wait_drive();
 
 //Back up
-chassis.set_drive_pid(24, DRIVE_SPEED);
+chassis.set_drive_pid(-24, DRIVE_SPEED);
 chassis.wait_drive();
 
 //turn the robot to the climb bar
-chassis.set_turn_pid(80, TURN_SPEED);
+chassis.set_turn_pid(120, TURN_SPEED);
 chassis.wait_drive();
 
 //move the robot forward onto the climb bar
@@ -364,6 +389,10 @@ void offensiveauton(){
  pros::Controller master(pros::E_CONTROLLER_MASTER);
  pros::IMU IMU(3);
 
+//Turn the robot towards the low goal
+chassis.set_turn_pid(-30, TURN_SPEED);
+chassis.wait_drive();
+
  //push the triball into the goal
  chassis.set_drive_pid(24, DRIVE_SPEED);
  chassis.wait_drive();
@@ -373,9 +402,14 @@ void offensiveauton(){
  chassis.wait_drive();
 
  //turn the robot back to the climb goal
- chassis.set_turn_pid(80, TURN_SPEED);
+ chassis.set_turn_pid(-120, TURN_SPEED);
  chassis.wait_drive();
 
  //move the robot to the bar
  chassis.set_drive_pid(36, DRIVE_SPEED);
+ chassis.wait_drive();
+
+//Opens the wings
+ Wings.set_value(true);
+
 }

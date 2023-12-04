@@ -211,7 +211,7 @@ void autonomous() {
 
     }
     if(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP) ){
-      master.print(1, 1, "Starting skillsAuton %d");
+       master.print(1, 1, "Starting skillsAuton %d");
 
 
         skillsAuton();
