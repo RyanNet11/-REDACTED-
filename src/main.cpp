@@ -218,6 +218,16 @@ void autonomous() {
 
     }
     
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)){
+      master.print(1,1, "Starting Offensive Auton %d");
+      offensiveAuton();
+    }
+
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)){
+      master.print(1,1, "Starting Defensive Auton %d");
+      defensiveAuton();
+    }
+    
   }
   }
 void opcontrol() {
@@ -239,3 +249,4 @@ void opcontrol() {
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }
 }
+

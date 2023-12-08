@@ -387,7 +387,7 @@ Wings.set_value(true);
 }
 
 //Offensive zone 2v2 auton program
-void offensiveauton(){
+void offensiveAuton(){
   pros::Motor Catapult(-4);
  pros::Motor Catapult_(5);
  pros::Motor_Group Cata({Catapult, Catapult_});
