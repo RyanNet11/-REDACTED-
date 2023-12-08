@@ -5,14 +5,14 @@
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  {-10, -20}
+  {-2, -11}
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  ,{1, 11}
+  ,{10, 20}
 
   // IMU Port
-  ,3
+  ,13
 
   // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
   //    (or tracking wheel diameter)
@@ -144,11 +144,11 @@ void autonomous() {
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
- pros::Motor Catapult(-4);
- pros::Motor Catapult_(5);
+ pros::Motor Catapult(-5);
+ pros::Motor Catapult_(1);
  pros::Motor_Group Cata({Catapult, Catapult_});
  pros::ADIDigitalOut Wings (1, LOW);
- pros::Rotation CataPos(12);
+ pros::Rotation CataPos(9);
  pros::Controller master(pros::E_CONTROLLER_MASTER);
 
   void diverControl(){

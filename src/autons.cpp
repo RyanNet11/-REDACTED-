@@ -247,14 +247,13 @@ void interfered_example() {
 
 //Skills auton program
 void skillsAuton() {
-
- pros::Motor Catapult(-4);
- pros::Motor Catapult_(5);
+ pros::Motor Catapult(-5);
+ pros::Motor Catapult_(1);
  pros::Motor_Group Cata({Catapult, Catapult_});
  pros::ADIDigitalOut Wings (1, LOW);
- pros::Rotation CataPos(12);
+ pros::Rotation CataPos(9);
  pros::Controller master(pros::E_CONTROLLER_MASTER);
- pros::IMU IMU(3);
+ pros::IMU IMU(13);
  int AutonTimer();
  int i = 0;
   //Backs the robot into the load zone
@@ -304,7 +303,7 @@ void skillsAuton() {
   pros::delay(200);
 
   //Sets the catapult in the lowered position
-   if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && CataPos.get_angle() > 30350) {
+   if (CataPos.get_angle() > 30350) {
       //If the curent angle is greater than 30330, we spin the catapult down untill it hits 30330
 
       Cata.move_voltage(8000); // Spins the motors
@@ -339,10 +338,10 @@ void skillsAuton() {
   chassis.wait_drive();
 
   //Drive back into the goal to push in any triballs that had been broken
-  chassis.set_drive_pid(28, DRIVE_SPEED);
+  chassis.set_drive_pid(24, DRIVE_SPEED);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(-20, DRIVE_SPEED);
+  chassis.set_drive_pid(-16, DRIVE_SPEED);
   chassis.wait_drive();
   
 
@@ -353,13 +352,13 @@ void skillsAuton() {
 //Defensive zone 2v2 auton program
 void defensiveAuton(){
 
- pros::Motor Catapult(-4);
- pros::Motor Catapult_(5);
+ pros::Motor Catapult(-5);
+ pros::Motor Catapult_(1);
  pros::Motor_Group Cata({Catapult, Catapult_});
  pros::ADIDigitalOut Wings (1, LOW);
- pros::Rotation CataPos(12);
+ pros::Rotation CataPos(9);
  pros::Controller master(pros::E_CONTROLLER_MASTER);
- pros::IMU IMU(3);
+ pros::IMU IMU(13);
 
 
 //turn the robot towards the goal 
@@ -388,13 +387,13 @@ Wings.set_value(true);
 
 //Offensive zone 2v2 auton program
 void offensiveAuton(){
-  pros::Motor Catapult(-4);
- pros::Motor Catapult_(5);
+ pros::Motor Catapult(-5);
+ pros::Motor Catapult_(1);
  pros::Motor_Group Cata({Catapult, Catapult_});
  pros::ADIDigitalOut Wings (1, LOW);
- pros::Rotation CataPos(12);
+ pros::Rotation CataPos(9);
  pros::Controller master(pros::E_CONTROLLER_MASTER);
- pros::IMU IMU(3);
+ pros::IMU IMU(13);
 
 //Turn the robot towards the low goal
 chassis.set_turn_pid(-30, TURN_SPEED);
