@@ -247,13 +247,13 @@ void interfered_example() {
 
 //Skills auton program
 void skillsAuton() {
- pros::Motor Catapult(-5);
- pros::Motor Catapult_(1);
+ pros::Motor Catapult(9);
+ pros::Motor Catapult_(-1);
  pros::Motor_Group Cata({Catapult, Catapult_});
  pros::ADIDigitalOut Wings (1, LOW);
- pros::Rotation CataPos(9);
+ pros::Rotation CataPos(10);
  pros::Controller master(pros::E_CONTROLLER_MASTER);
- pros::IMU IMU(13);
+ pros::IMU IMU(12);
  int AutonTimer();
  int i = 0;
   //Backs the robot into the load zone
@@ -265,25 +265,27 @@ void skillsAuton() {
   chassis.wait_drive();
 
   //Fire the catapult for 45 seconds
-    while (i < 45){
+    while (i = true){
       if(CataPos.get_angle() > 30350) {
 
           //If the curent angle is greater than 30330, we spin the catapult down untill it hits 30330
 
           Cata.move_voltage(8000); // Spins the motors
-          pros::delay(0.5); //delay ensures the catapult doesnt break 
+          pros::delay(.1); //delay ensures the catapult doesnt break 
 
           //The goal of our L2 button program is to be able to pull back the catapult to the normal
           //launching position where the match loads can be loaded into the robot. 
       }
       else if(CataPos.get_angle() < 30360){
+        pros::delay(.5);
         Cata.move_voltage(9000);
      }
-    i = i+1;
+       i = i + 1;
 
-    }
+     }
 
-  pros::delay(4000);
+
+  pros::delay(38000);
   i = 46;
   Cata.move_voltage(0);
   chassis.set_drive_pid(2, DRIVE_SPEED);
@@ -294,7 +296,7 @@ void skillsAuton() {
   chassis.wait_drive();
 
   //move to the middle of the defensive zone
-  chassis.set_drive_pid(60, DRIVE_SPEED);
+  chassis.set_drive_pid(55, DRIVE_SPEED);
   chassis.wait_drive();
 
   //turn towards the middle bar
@@ -312,7 +314,8 @@ void skillsAuton() {
       //The goal of our L2 button program is to be able to pull back the catapult to the normal
       //launching position where the match loads can be loaded into the robot. 
 
-    }else{ // If nothing is being pressed
+    }
+    else{ // If nothing is being pressed
 
       Cata.move_voltage(0); //stop the motors
   
@@ -321,12 +324,14 @@ void skillsAuton() {
   //Drive until it begins to climb the middle bar
 
 
-  chassis.set_drive_pid(80, 110);
+  chassis.set_drive_pid(60, 110);
   chassis.wait_drive();
   
   //Opens the wings
   
   Wings.set_value(true);
+
+  Cata.move_voltage(0);
   
 
   //Move forward to push the shot triballs into the goal
@@ -352,13 +357,13 @@ void skillsAuton() {
 //Defensive zone 2v2 auton program
 void defensiveAuton(){
 
- pros::Motor Catapult(-5);
- pros::Motor Catapult_(1);
+  pros::Motor Catapult(9);
+ pros::Motor Catapult_(-1);
  pros::Motor_Group Cata({Catapult, Catapult_});
  pros::ADIDigitalOut Wings (1, LOW);
- pros::Rotation CataPos(9);
+ pros::Rotation CataPos(10);
  pros::Controller master(pros::E_CONTROLLER_MASTER);
- pros::IMU IMU(13);
+ pros::IMU IMU(12);
 
 
 //turn the robot towards the goal 
@@ -387,13 +392,13 @@ Wings.set_value(true);
 
 //Offensive zone 2v2 auton program
 void offensiveAuton(){
- pros::Motor Catapult(-5);
- pros::Motor Catapult_(1);
+ pros::Motor Catapult(9);
+ pros::Motor Catapult_(-1);
  pros::Motor_Group Cata({Catapult, Catapult_});
  pros::ADIDigitalOut Wings (1, LOW);
- pros::Rotation CataPos(9);
+ pros::Rotation CataPos(10);
  pros::Controller master(pros::E_CONTROLLER_MASTER);
- pros::IMU IMU(13);
+ pros::IMU IMU(12);
 
 //Turn the robot towards the low goal
 chassis.set_turn_pid(-30, TURN_SPEED);

@@ -1,0 +1,14 @@
+void cataSpinz(){
+  if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X)){
+    if (i == false){
+      i = true;
+    }else if(i == true){
+      i = false;
+    }
+  }
+      if (i == true){
+      Cata.move_voltage(9000);
+    }else{
+      Cata.move_voltage(0);
+    }
+}

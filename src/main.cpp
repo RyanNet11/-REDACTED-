@@ -4,13 +4,13 @@
 // Chassis constructor
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)
-  {-10, -20}
+  {-14, -2}
 
   // Right Chassis Ports (negative port will reverse it!)
-  ,{1, 11}
+  ,{8, 20}
 
   // IMU Port
-  ,3
+  ,12
 
   // Wheel Diameter (Remember, 4" wheels are actually 4.125!) (or tracking wheel diameter)
   ,2.75
@@ -124,137 +124,148 @@ void autonomous() {
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
- pros::Motor Catapult(-5);
- pros::Motor Catapult_(1);
+ pros::Motor Catapult(9);
+ pros::Motor Catapult_(-1);
  pros::Motor_Group Cata({Catapult, Catapult_});
  pros::ADIDigitalOut Wings (1, LOW);
- pros::Rotation CataPos(9);
+ pros::Rotation CataPos(10);
  pros::Controller master(pros::E_CONTROLLER_MASTER);
-
-  void diverControl(){
-
-    chassis.set_drive_brake(MOTOR_BRAKE_COAST);
-    Wings.set_value(LOW);
-
-    while (true){
-
-       chassis.tank();
-
-     if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){        //If R2 is being held
+ bool i = false;
 
 
-     Wings.set_value(HIGH);    //Spread the wings
-       
-     }else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)){ //If R2 is not being held
 
-       
-        Wings.set_value (LOW); //Tuck the wings in 
-    }
 
-    //* Runs the catapult functions 
+void diverControl(){
 
-    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_X) && CataPos.get_angle() > 34400){ 
-      Cata.move_voltage(9000);
-      pros::delay(1);  
 
-       /**  Runs the middle setting for the catapult when X button is pressed..
+  chassis.set_drive_brake(MOTOR_BRAKE_COAST);
+  Wings.set_value(LOW);
+
+  while (true){
+
+      chassis.tank();
+
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){        //If R2 is being held
+
+
+    Wings.set_value(HIGH);    //Spread the wings
+      
+    }else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)){ //If R2 is not being held
+
+      
+      Wings.set_value (LOW); //Tuck the wings in 
+  }
+
+  //* Runs the catapult functions 
+
+      if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){ 
+        Cata.move_voltage(9000); 
+
+        /**  Runs the normal cycle through function of the catapult while the 
+       * L1 button is being pressed.. 
        * 
-       * 34500 was found as the original working value, modified for best fit
-       * When the X button is being pressed, the program will check to see if
-       * the curent catapult angle is greater than 34400, or 344 degreese.
-       * While true, this means the catapult is above the value needed to set 
-       * the catapult into the first ratchet, so we spin the motors. We added
-       * a Delay to the function because the readout values are too fast, and
-       * this causes the brain to slow down and not be effective. Once the 
-       * catapult sets into the ratchet, at about 344.00, the statement will
-       * read false. When no longer true, the statment is ignored and the 
-       * program will move on to the next statments.
+       * Nothing fancy about this snippet of code, when the button is 
+       * held, the motor group will spin!!
+      */
+      
+    }else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && CataPos.get_angle() > 30350) {
+      Cata.move_voltage(8000); 
+      pros::delay(0.2); 
+
+        /**  Runs the last ratchet placement when L2 is being pressed
+       * 
+       * While the L2 button is being pressed, we first check if the catapult 
+       * angle is more than 30350, or 303.50 degrese. This is about where
+       * the catapult's third ratchet will click into place, similar to the X 
+       * button above. When the value reads false, we assume that the angle is 
+       * passed where we need to set the value. While true, we sping the
+       * motors at 8000 voltage. The other motors use 9000, however we found
+       * that this is too fast for the values to read. Delay is also added to
+       * make sure the brin can keep up with the values. The main goal of
+       * the L2 setting is for match loading, as the trajectory of the third
+       * ratchet when launched is almost perfect.
        */
 
-      }else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){ 
-          Cata.move_voltage(9000); 
-
-         /**  Runs the normal cycle through function of the catapult while the 
-         * L1 button is being pressed.. 
-         * 
-         * Nothing fancy about this snippet of code, when the button is 
-         * held, the motor group will spin!!
-        */
-       
-      }else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && CataPos.get_angle() > 30350) {
-        Cata.move_voltage(8000); 
-        pros::delay(0.2); 
-
-         /**  Runs the last ratchet placement when L2 is being pressed
-         * 
-         * While the L2 button is being pressed, we first check if the catapult 
-         * angle is more than 30350, or 303.50 degrese. This is about where
-         * the catapult's third ratchet will click into place, similar to the X 
-         * button above. When the value reads false, we assume that the angle is 
-         * passed where we need to set the value. While true, we sping the
-         * motors at 8000 voltage. The other motors use 9000, however we found
-         * that this is too fast for the values to read. Delay is also added to
-         * make sure the brin can keep up with the values. The main goal of
-         * the L2 setting is for match loading, as the trajectory of the third
-         * ratchet when launched is almost perfect.
-         */
-
-      }else{ 
-        Cata.move_voltage(0); 
-
-         /**  STOPS all motors when values read false
-         * 
-         * When values above read false, such as the angle being less than 
-         * a set value, or a button is no longer being pressed, we have 
-         * to have a part of the function that stated what to do. We make 
-         * the motor group stop at all times the values above are not true
-        */
-
+    }else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X)){
+      if (i == false){
+        i = true;
+      }else if(i == true){
+        i = false; 
       }
+    }else if (i == true){
+      if(CataPos.get_angle() > 30350) {
 
-     //Debugging for catapult angle
+          //If the curent angle is greater than 30330, we spin the catapult down untill it hits 30330
 
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
-      master.print(1, 1, "Position: %d", CataPos.get_angle());
+          Cata.move_voltage(8000); // Spins the motors
+          pros::delay(.1); //delay ensures the catapult doesnt break 
 
-      /** During the making of the catapult angle functions,
-       * we needed a way to see the curent angle of the cata-
-       * rotation sensor. To do this, we mapped the Y button
-       * on the controller to print out the angle. This 
-       * proved to be essential for our understanding of the 
-       * rotation sensor and how it worked.
+          //The goal of our L2 button program is to be able to pull back the catapult to the normal
+          //launching position where the match loads can be loaded into the robot. 
+      }
+      else if(CataPos.get_angle() < 30360){
+        pros::delay(.5);
+        Cata.move_voltage(9000);
+     }    }
+    else
+    { 
+      Cata.move_voltage(0); 
+
+        /**  STOPS all motors when values read false
        * 
+       * When values above read false, such as the angle being less than 
+       * a set value, or a button is no longer being pressed, we have 
+       * to have a part of the function that stated what to do. We make 
+       * the motor group stop at all times the values above are not true
       */
 
     }
 
+    //Debugging for catapult angle
 
-   // Skills auton selecter 
+  if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
+    master.print(1, 1, "Position: %d", CataPos.get_angle());
 
-    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP) ){
-      master.print(1, 1, "Starting skillsAuton");
-      skillsAuton();
+    /** During the making of the catapult angle functions,
+     * we needed a way to see the curent angle of the cata-
+     * rotation sensor. To do this, we mapped the Y button
+     * on the controller to print out the angle. This 
+     * proved to be essential for our understanding of the 
+     * rotation sensor and how it worked.
+     * 
+    */
 
-      /** While practicing and testing, it can be easier to
-       * have a button to exicute the auton programs. This
-       * saves us time and makes the testing prosses more 
-       * simplistic. Here we program the UP key on the 
-       * controller to print "staring skills auton" and
-       * it will start the skills Auton
-      */
+  }
 
-    }
-    
-    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)){
-      master.print(1,1, "Starting Offensive Auton %d");
-      offensiveAuton();
-    }
 
-    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)){
-      master.print(1,1, "Starting Defensive Auton %d");
-      defensiveAuton();
-    }
-    
+
+
+  // Skills auton selecter 
+
+  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP) ){
+    master.print(1, 1, "Starting skillsAuton");
+    skillsAuton();
+
+    /** While practicing and testing, it can be easier to
+     * have a button to exicute the auton programs. This
+     * saves us time and makes the testing prosses more 
+     * simplistic. Here we program the UP key on the 
+     * controller to print "staring skills auton" and
+     * it will start the skills Auton
+    */
+
+  }
+
+  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)){
+    master.print(1,1, "Starting Offensive Auton %d");
+    offensiveAuton();
+  }
+
+  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)){
+    master.print(1,1, "Starting Defensive Auton %d");
+    defensiveAuton();
+  }
+
   }
   }
 
