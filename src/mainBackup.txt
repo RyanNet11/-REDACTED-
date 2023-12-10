@@ -1,88 +1,4 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
- void cataHoldsDown(){
-  if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)&& CataPos.get_angle() > 30350) {
-
-    Cata.move_voltage(9000);
-        pros::delay(.1);
-
-
-  }else{
-    Cata.move_voltage(0);
-    pros::delay(.1);
-
-  }
- }
-void cataCyclesNormal(){
-  if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){
-    Cata.move_voltage(9000);
-        pros::delay(.1);
-
-  }else{
-    Cata.move_voltage(0);
-  }
-}
-void cataCyclesButtonOn(){
-  if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X)){
-    i = true;
-        pros::delay(1);
-
-  }
-}
-void cataCyclesButtonOff(){
-  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A)){
-    i = false;
-    pros::delay(1);
-
-  }
-}
-void catapultButtons(){
-  if (i == true){
-    if(CataPos.get_angle() > 30350) {
-
-    //If the curent angle is greater than 30330, we spin the catapult down untill it hits 30330
-
-    Cata.move_voltage(8000); // Spins the motors
-    pros::delay(.1); //delay ensures the catapult doesnt break 
-
-    //The goal of our L2 button program is to be able to pull back the catapult to the normal
-    //launching position where the match loads can be loaded into the robot. 
-    }
-else if(CataPos.get_angle() < 30360){
-  pros::delay(.5);
-  Cata.move_voltage(9000);
-  }
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include "main.h"
-#include <iostream>  // For std::to_string
-#include "pros/rtos.hpp"  // For pros::c::task_get_count
 
 
 // Chassis constructor
@@ -109,91 +25,7 @@ Drive chassis (
   ,0.6
 
 );
- pros::Motor Catapult(9);
- pros::Motor Catapult_(-1);
- pros::Motor_Group Cata({Catapult, Catapult_});
- pros::Motor_Group CataHoldthird({Catapult, Catapult_});
- pros::Motor_Group CataHoldSecond({Catapult, Catapult_}); 
- pros::Motor_Group CataCycles({Catapult, Catapult_});
 
- pros::ADIDigitalOut Wings (1, LOW);
- pros::Rotation CataPos(10);
- pros::Controller master(pros::E_CONTROLLER_MASTER);
- bool i = false;
-
-int cataHoldDown = 1;
-int cataHoldMiddle = 1;
-int cataCycleNormal = 1;
-int cataCycleButtonON = 1;
-int cataCycleButtonOFF = 1;
-int cataButtons = 1;
-int driverMain = 1;
-//int thewings = 1;
-  void cataHoldsDown(){
-    while (true){
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)&& CataPos.get_angle() > 30350) {
-
-      CataHoldthird.move_voltage(9000);
-          pros::delay(.1);
-
-
-    }else{
-      CataHoldthird.move_voltage(0);
-      pros::delay(.1);
-
-    }
-    pros::delay(1);
-  }
-  }
-void cataCyclesNormal(){
-  while (true){
-  if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){
-    CataCycles.move_voltage(9000);
-        pros::delay(.1);
-
-  }else{
-    CataCycles.move_voltage(0);
-  }
-  pros::delay(1);
-}}
-void cataCyclesButtonOn(){
-  if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X)){
-    i = true;
-        pros::delay(1);
-
-  }
-  pros::delay(1);
-}
-void cataCyclesButtonOff(){
-  while(true){
-  if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A)){
-    i = false;
-    pros::delay(1);
-
-  }
-  pros::delay(1);
-}}
-void catapultButtons(){
-  while(true){
-  if (i == true){
-    if(CataPos.get_angle() > 30350) {
-
-    //If the curent angle is greater than 30330, we spin the catapult down untill it hits 30330
-
-    Cata.move_voltage(8000); // Spins the motors
-    pros::delay(.1); //delay ensures the catapult doesnt break 
-
-    //The goal of our L2 button program is to be able to pull back the catapult to the normal
-    //launching position where the match loads can be loaded into the robot. 
-    }}
-else if(CataPos.get_angle() < 30360){
-  pros::delay(.5);
-  Cata.move_voltage(9000);
-  }
-    pros::delay(1);
-
-  }
-}
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -223,22 +55,6 @@ void initialize() {
     Auton("This is skills auton lmao", skillsAuton),
 
   });
-    pros::Task CyclesNormalTask([](void*) { cataCyclesNormal(); }, nullptr, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "CyclesNormal");
-  CyclesNormalTask.resume();
-
-  pros::Task HoldsDownTask([](void*) { cataHoldsDown(); }, nullptr, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "HoldsDown");
-  HoldsDownTask.resume();
-
-  pros::Task cButtonsTask([](void*) { catapultButtons(); }, nullptr, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "cButtons");
-  cButtonsTask.resume();
-  
-  pros::Task CyclesButtonOnTask([](void*) { cataCyclesButtonOn(); }, nullptr, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "CyclesButtonOn");
-  CyclesButtonOnTask.resume();
-
-  pros::Task CyclesButtonOffTask([](void*) { cataCyclesButtonOff(); }, nullptr, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "CyclesButtonOff");
-  CyclesButtonOffTask.resume();
-
-
 
   // Initialize chassis and auton selector
   chassis.initialize();
@@ -307,46 +123,128 @@ void autonomous() {
  * If the robot is disabled or communications is lost, the
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
- 
+ */
  pros::Motor Catapult(9);
  pros::Motor Catapult_(-1);
  pros::Motor_Group Cata({Catapult, Catapult_});
  pros::ADIDigitalOut Wings (1, LOW);
  pros::Rotation CataPos(10);
  pros::Controller master(pros::E_CONTROLLER_MASTER);
- bool i = false;*
+ bool i = false;
 
 
 
- void thewings(){
-  while(true){
-  Wings.set_value(LOW);
-  while(true){
-    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){
-      Wings.set_value(HIGH);
-    }else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)){
-      Wings.set_value(LOW);
-    }
-  }
-  }
-}//*/
+
 void diverControl(){
 
+
   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
-    
-  //pros::Task wing(thewings);
+  Wings.set_value(LOW);
 
   while (true){
-      chassis.tank();//testing
+
+      chassis.tank();
+
+    if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){        //If R2 is being held
+
+
+    Wings.set_value(HIGH);    //Spread the wings
+      
+    }else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)){ //If R2 is not being held
+
+      
+      Wings.set_value (LOW); //Tuck the wings in 
   }
+
+  //* Runs the catapult functions 
+
+      if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)){ 
+        Cata.move_voltage(9000); 
+
+        /**  Runs the normal cycle through function of the catapult while the 
+       * L1 button is being pressed.. 
+       * 
+       * Nothing fancy about this snippet of code, when the button is 
+       * held, the motor group will spin!!
+      */
+      
+    }else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && CataPos.get_angle() > 30350) {
+      Cata.move_voltage(8000); 
+      pros::delay(0.2); 
+
+        /**  Runs the last ratchet placement when L2 is being pressed
+       * 
+       * While the L2 button is being pressed, we first check if the catapult 
+       * angle is more than 30350, or 303.50 degrese. This is about where
+       * the catapult's third ratchet will click into place, similar to the X 
+       * button above. When the value reads false, we assume that the angle is 
+       * passed where we need to set the value. While true, we sping the
+       * motors at 8000 voltage. The other motors use 9000, however we found
+       * that this is too fast for the values to read. Delay is also added to
+       * make sure the brin can keep up with the values. The main goal of
+       * the L2 setting is for match loading, as the trajectory of the third
+       * ratchet when launched is almost perfect.
+       */
+
+    }else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X)){
+      if (i == false){
+        i = true;
+      }else if(i == true){
+        i = false; 
+      }
+    }else if (i == true){
+      if(CataPos.get_angle() > 30350) {
+
+          //If the curent angle is greater than 30330, we spin the catapult down untill it hits 30330
+
+          Cata.move_voltage(8000); // Spins the motors
+          pros::delay(.1); //delay ensures the catapult doesnt break 
+
+          //The goal of our L2 button program is to be able to pull back the catapult to the normal
+          //launching position where the match loads can be loaded into the robot. 
+      }
+      else if(CataPos.get_angle() < 30360){
+        pros::delay(.5);
+        Cata.move_voltage(9000);
+     }    }
+    else
+    { 
+      Cata.move_voltage(0); 
+
+        /**  STOPS all motors when values read false
+       * 
+       * When values above read false, such as the angle being less than 
+       * a set value, or a button is no longer being pressed, we have 
+       * to have a part of the function that stated what to do. We make 
+       * the motor group stop at all times the values above are not true
+      */
+
+    }
+
+    //Debugging for catapult angle
+
+  if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
+    master.print(1, 1, "Position: %d", CataPos.get_angle());
+
+    /** During the making of the catapult angle functions,
+     * we needed a way to see the curent angle of the cata-
+     * rotation sensor. To do this, we mapped the Y button
+     * on the controller to print out the angle. This 
+     * proved to be essential for our understanding of the 
+     * rotation sensor and how it worked.
+     * 
+    */
+
+  }
+
+
+
 
   // Skills auton selecter 
 
   if(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP) ){
-   master.print(1, 1, "Number of tasks: %s", std::to_string(pros::c::task_get_count()).c_str());
-
-    //master.print(1, 1, "Starting skillsAuton");
-   // skillsAuton();
+    master.print(1, 1, "Starting skillsAuton");
+    skillsAuton();
 
     /** While practicing and testing, it can be easier to
      * have a button to exicute the auton programs. This
@@ -367,10 +265,9 @@ void diverControl(){
     master.print(1,1, "Starting Defensive Auton %d");
     defensiveAuton();
   }
-  
- 
+
   }
-  
+  }
 
 void opcontrol() {
   // This is preference to what you like to drive on.
