@@ -44,7 +44,7 @@ void initialize() {
   chassis.set_active_brake(0); // Sets the active brake kP. We recommend 0.1.
   chassis.set_curve_default(0, 0); // Defaults for curve. If using tank, only the first parameter is used. (Comment this line out if you have an SD card!)  
   default_constants(); // Set the drive to your own constants from autons.cpp!
-
+S
   // These are already defaulted to these buttons, but you can change the left/right curve buttons here!
   // chassis.set_left_curve_buttons (pros::E_CONTROLLER_DIGITAL_LEFT, pros::E_CONTROLLER_DIGITAL_RIGHT); // If using tank, only the left side is used. 
   // chassis.set_right_curve_buttons(pros::E_CONTROLLER_DIGITAL_Y,    pros::E_CONTROLLER_DIGITAL_A);
@@ -187,12 +187,11 @@ void diverControl(){
        */
 
     }else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X)){
-      if (i == false){
-        i = true;
-      }else if(i == true){
-        i = false; 
-      }
-    }else if (i == true){
+      i = true;
+      
+    }else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A)){
+      i = false;
+    }else if(i == true){
       if(CataPos.get_angle() > 30350) {
 
           //If the curent angle is greater than 30330, we spin the catapult down untill it hits 30330
