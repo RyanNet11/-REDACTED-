@@ -247,6 +247,13 @@ void interfered_example() {
 
 //Skills auton program
 void skillsAuton() {
+ pros::Motor Left1(-14);
+ pros::Motor Left2(-2);
+ pros::Motor Right1(8);
+ pros::Motor Right2(20);
+pros::ADIAnalogIn sensor (2);
+ pros::Motor_Group Left({Left1,Left2});
+ pros::Motor_Group Right({Right1,Right2});
  pros::Motor Catapult(9);
  pros::Motor Catapult_(-1);
  pros::Motor_Group Cata({Catapult, Catapult_});
@@ -256,103 +263,99 @@ void skillsAuton() {
  pros::IMU IMU(12);
  int AutonTimer();
  int i = 0;
-  //Backs the robot into the load zone
-  chassis.set_drive_pid(-6, DRIVE_SPEED,true);
+  chassis.set_turn_pid(-45, TURN_SPEED); //tuen
   chassis.wait_drive();
-
-  //Turns the robot to shoot the catapult to the red goal
-  chassis.set_turn_pid(30, TURN_SPEED);
+  chassis.set_drive_pid(-20, DRIVE_SPEED,true); //drive back
   chassis.wait_drive();
-
-  //Fire the catapult for 45 seconds
-    while (i = true){
-      if(CataPos.get_angle() > 30350) {
-
-          //If the curent angle is greater than 30330, we spin the catapult down untill it hits 30330
-
-          Cata.move_voltage(8000); // Spins the motors
-          pros::delay(.1); //delay ensures the catapult doesnt break 
-
-          //The goal of our L2 button program is to be able to pull back the catapult to the normal
-          //launching position where the match loads can be loaded into the robot. 
-      }
-      else if(CataPos.get_angle() < 30360){
-        pros::delay(.5);
-        Cata.move_voltage(9000);
-     }
-       i = i + 1;
-
-     }
-
-
-  pros::delay(38000);
-  i = 46;
-  Cata.move_voltage(0);
-  chassis.set_drive_pid(2, DRIVE_SPEED);
+  chassis.set_turn_pid(45, TURN_SPEED); // turn again
   chassis.wait_drive();
+  chassis.set_drive_pid(-10, 40,true);
+  chassis.set_exit_condition(chassis.drive_exit, 20,  20, 100, 150, 500, 500); //back into bar
   pros::delay(500);
+  IMU.set_heading(45);
+  pros::delay(500);
+  chassis.set_swing_pid(ez::RIGHT_SWING, 32, 30); //swing
+  Left.brake();
+  chassis.wait_drive();
+  chassis.set_swing_pid(ez::LEFT_SWING, 32, 30); //swing
+  chassis.set_drive_pid(-0.2, DRIVE_SPEED,true); //drive back
+  chassis.wait_drive();
+  chassis.set_drive_brake(pros::E_MOTOR_BRAKE_HOLD);
+  Cata.move_voltage(8000);
+  chassis.set_drive_pid(-1, 10,true); //drive back
+    chassis.set_swing_pid(ez::LEFT_SWING, 31, 30); //swing
+    pros::delay(5000);
+  chassis.set_swing_pid(ez::LEFT_SWING, 31, 30); //swing
+  pros::delay(5000);
+  //chassis.set_swing_pid(ez::LEFT_SWING, 31, 30); //swing
+ // pros::delay(5000);
+ // chassis.set_swing_pid(ez::LEFT_SWING, 31, 30); //swing
+ //   pros::delay(5000);
+//chassis.set_swing_pid(ez::LEFT_SWING, 31, 30); //swing
+ //   pros::delay(5000);
+//  chassis.set_swing_pid(ez::LEFT_SWING, 31, 30); //swing
+   // pros::delay(5000);
+  //chassis.set_swing_pid(ez::LEFT_SWING, 31, 30); //swing
+   // pros::delay(5000);
+  //chassis.set_swing_pid(ez::LEFT_SWING, 31, 30); //swing
+  //pros::delay(5000);
+    Cata.move_voltage(0);
+  chassis.wait_drive();
+    chassis.set_turn_pid(45, TURN_SPEED); //tuen
+  chassis.wait_drive();
+  chassis.set_drive_pid(60, DRIVE_SPEED,true); //drive back
+  chassis.wait_drive();
+  chassis.set_swing_pid(ez::LEFT_SWING, 90, 70); //swing
+  chassis.wait_drive();
+    chassis.set_swing_pid(ez::LEFT_SWING, 90, 70); //swing
 
-  chassis.set_turn_pid(60, TURN_SPEED);
+  chassis.set_drive_pid(20, DRIVE_SPEED,true); //drive back
   chassis.wait_drive();
 
-  //move to the middle of the defensive zone
-  chassis.set_drive_pid(55, DRIVE_SPEED);
+  while(sensor.get_value() > 2790) {
+    // drive forward until a line is hit
+    chassis.set_drive_pid(-1, 89,true); //drive back
+    pros::delay(0.01);
+    
+  }
+
+
   chassis.wait_drive();
+    chassis.set_swing_pid(ez::LEFT_SWING, 0, 89); //swing
+       chassis.wait_drive();
+    chassis.set_turn_pid(0, 89); //tuen
+           chassis.wait_drive();
+        while(CataPos.get_angle() > 30350){
+              Cata.move_voltage(8000); 
+              pros::delay(0.2); 
+        }
+              Cata.move_voltage(0); 
 
-  //turn towards the middle bar
-  chassis.set_turn_pid(-5, TURN_SPEED);
-  chassis.wait_drive();
-  pros::delay(200);
+        chassis.set_drive_pid(30, 89,true); //drive back
+               chassis.wait_drive();
 
-  //Sets the catapult in the lowered position
-   if (CataPos.get_angle() > 30350) {
-      //If the curent angle is greater than 30330, we spin the catapult down untill it hits 30330
+               Wings.set_value(true);
 
-      Cata.move_voltage(8000); // Spins the motors
-      pros::delay(0.2); //delay ensures the catapult doesnt break 
+                       chassis.set_drive_pid(50, 89,true); //drive back
+               chassis.wait_drive();
 
-      //The goal of our L2 button program is to be able to pull back the catapult to the normal
-      //launching position where the match loads can be loaded into the robot. 
+        chassis.set_drive_pid(-30, 89,true); //drive back
+               chassis.wait_drive();
 
-    }
-    else{ // If nothing is being pressed
+        chassis.set_drive_pid(40, 89,true); //drive back
+       chassis.wait_drive();
 
-      Cata.move_voltage(0); //stop the motors
-  
-    }
-
-  //Drive until it begins to climb the middle bar
-
-
-  chassis.set_drive_pid(60, 110);
-  chassis.wait_drive();
-  
-  //Opens the wings
-  
-  Wings.set_value(true);
-
-  Cata.move_voltage(0);
-  
-
-  //Move forward to push the shot triballs into the goal
-  chassis.set_drive_pid(40, DRIVE_SPEED);
-  chassis.wait_drive();
-
-  //Back up away from the goal
-  chassis.set_drive_pid(-24, DRIVE_SPEED);
-  chassis.wait_drive();
-
-  //Drive back into the goal to push in any triballs that had been broken
-  chassis.set_drive_pid(24, DRIVE_SPEED);
-  chassis.wait_drive();
-
-  chassis.set_drive_pid(-16, DRIVE_SPEED);
-  chassis.wait_drive();
-  
 
   
 
 }
+
+
+
+  
+
+
+
 
 //Defensive zone 2v2 auton program
 void defensiveAuton(){

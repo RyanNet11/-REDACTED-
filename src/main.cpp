@@ -134,8 +134,8 @@ void autonomous() {
 
 
 
-
 void diverControl(){
+ CataPos.set_position(0);
 
 
   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
